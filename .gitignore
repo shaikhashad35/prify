@@ -1,0 +1,18 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment (should never be needed, but just in case)
+.env
+.env.*
+
+# Editor
+.idea/
+.vscode/
+
+# Node (not used, but prevent accidental commits)
+node_modules/
+dist/

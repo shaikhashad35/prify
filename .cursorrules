@@ -1,0 +1,27 @@
+# PRify — Cursor AI Rules
+
+## Project Type
+Pure frontend web app (HTML/CSS/JS). No backend, no Node.js, no npm, no build step.
+
+## Tech Stack
+- Vanilla HTML5, CSS3, JavaScript (ES Modules)
+- SheetJS (xlsx) via CDN for Excel parsing
+- Wikipedia REST API for celebrity bios
+- Google Gemini API for AI tweet generation
+- Hosted on GitHub Pages
+
+## Rules
+1. All code is client-side browser JavaScript — never suggest Node.js or server-side code
+2. Use ES Modules (import/export) for all JS files
+3. Use const by default, let when mutation needed, never var
+4. Use async/await for async operations
+5. Use JSDoc comments for all exported functions
+6. Use textContent (not innerHTML) for user data to prevent XSS
+7. SheetJS is loaded via CDN script tag — access via window.XLSX
+8. Gemini API key is stored in localStorage only
+9. Process celebrities sequentially with delays to avoid rate limiting
+10. All error handling should show user-friendly messages in the UI
+11. Keep functions small and single-purpose
+12. CSS uses custom properties (variables) defined in :root
+13. No external CSS frameworks — custom styles only
+14. Responsive design using CSS Grid/Flexbox

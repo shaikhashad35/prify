@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="PRify — AI-powered PR tweet generator. Personalized celebrity messaging at scale.">
+  <title>PRify — AI-Powered PR Tweet Generator</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <!-- SheetJS for Excel parsing/generation in browser -->
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-brand">
+        <h1 class="logo">🚀 PRify</h1>
+        <p class="tagline">AI-Powered PR Tweet Generator</p>
+      </div>
+      <p class="header-desc">Upload your celebrity list, enter your PR agenda, and get personalized tweets crafted by AI — each one tailored to the celebrity's persona.</p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+      <!-- Step 1: API Key -->
+      <section class="card" id="section-apikey">
+        <div class="card-header">
+          <span class="step-badge">Step 1</span>
+          <h2>Gemini API Key</h2>
+        </div>
+        <div class="card-body">
+          <p class="hint">Your key is stored locally in your browser — never sent to any server except Google's Gemini API.</p>
+          <div class="input-group">
+            <input type="password" id="apiKeyInput" placeholder="Paste your Gemini API key here..." autocomplete="off">
+            <button id="toggleKeyBtn" class="btn btn-icon" title="Show/Hide key">👁️</button>
+            <button id="saveKeyBtn" class="btn btn-secondary">Save Key</button>
+          </div>
+          <p class="hint">Don't have a key? <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Get one free from Google AI Studio ↗</a></p>
+          <div id="apiKeyStatus" class="status-message"></div>
+        </div>
+      </section>
+
+      <!-- Step 2: Upload Excel -->
+      <section class="card" id="section-upload">
+        <div class="card-header">
+          <span class="step-badge">Step 2</span>
+          <h2>Upload Celebrity List</h2>
+        </div>
+        <div class="card-body">
+          <p class="hint">Excel file (.xlsx) with columns: <strong>Name</strong>, <strong>Contact</strong>, <strong>Wikipedia Link</strong></p>
+          <div class="dropzone" id="dropzone">
+            <div class="dropzone-content">
+              <span class="dropzone-icon">📁</span>
+              <p>Drag & drop your Excel file here</p>
+              <p class="hint">or click to browse</p>
+            </div>
+            <input type="file" id="fileInput" accept=".xlsx,.xls" hidden>
+          </div>
+          <div id="fileStatus" class="status-message"></div>
+          <div id="previewSection" class="preview-section" hidden>
+            <h3>📋 Preview (<span id="celebCount">0</span> celebrities)</h3>
+            <div class="table-wrapper">
+              <table id="previewTable">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Contact</th>
+                    <th>Wikipedia Link</th>
+                  </tr>
+                </thead>
+                <tbody id="previewBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 3: PR Agenda -->
+      <section class="card" id="section-agenda">
+        <div class="card-header">
+          <span class="step-badge">Step 3</span>
+          <h2>PR Agenda</h2>
+        </div>
+        <div class="card-body">
+          <p class="hint">Describe what you want to promote. Be specific — the more detail, the better the tweets.</p>
+          <textarea id="agendaInput" rows="5" placeholder="Example: Promote the upcoming clean water initiative by XYZ Foundation launching on March 15. Highlight the importance of clean drinking water in rural India and encourage people to donate."></textarea>
+          <div class="char-count"><span id="agendaCharCount">0</span> characters</div>
+        </div>
+      </section>
+
+      <!-- Generate Button -->
+      <div class="action-bar">
+        <button id="generateBtn" class="btn btn-primary btn-large" disabled>
+          🚀 Generate Personalized Tweets
+        </button>
+      </div>
+
+      <!-- Progress Section -->
+      <section class="card" id="section-progress" hidden>
+        <div class="card-header">
+          <h2>⏳ Processing</h2>
+        </div>
+        <div class="card-body">
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+          </div>
+          <p class="progress-text" id="progressText">Preparing...</p>
+          <div class="log-container" id="logContainer"></div>
+        </div>
+      </section>
+
+      <!-- Results Section -->
+      <section class="card" id="section-results" hidden>
+        <div class="card-header">
+          <h2>✅ Results</h2>
+          <button id="downloadBtn" class="btn btn-primary">📥 Download Excel</button>
+        </div>
+        <div class="card-body">
+          <div class="results-summary" id="resultsSummary"></div>
+          <div class="table-wrapper">
+            <table id="resultsTable">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Generated Tweet</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="resultsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>PRify v1.0 — All processing happens in your browser. Your data never leaves your device.</p>
+    </footer>
+
+  </div>
+
+  <script type="module" src="assets/js/app.js"></script>
+</body>
+</html>
