@@ -1,18 +1,8 @@
-/**
- * geminiService.js — Call Google Gemini API for personalized tweet generation
- */
+import type { WikipediaData, ValidationResult } from '../types';
 
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent';
 
-/**
- * Build the prompt for Gemini to generate a personalized tweet
- * @param {string} name - Celebrity name
- * @param {string} summary - Wikipedia bio summary
- * @param {string} description - Wikipedia short description
- * @param {string} agenda - PR agenda text
- * @returns {string}
- */
-export function buildPrompt(name, summary, description, agenda) {
+function buildPrompt(name: string, summary: string, description: string, agenda: string): string {
   return `You are a PR copywriting specialist who writes authentic social media posts for celebrities.
 
 Celebrity: ${name}
@@ -29,15 +19,12 @@ Instructions:
 6. Return ONLY the tweet text — no quotes, no labels, no explanation`;
 }
 
-/**
- * Generate a personalized tweet for a celebrity using Gemini API
- * @param {string} apiKey - User's Gemini API key
- * @param {string} name - Celebrity name
- * @param {{ summary: string, description: string }} bio - Wikipedia bio data
- * @param {string} agenda - PR agenda text
- * @returns {Promise<{ tweet: string, error: string|null }>}
- */
-export async function generatePersonalizedTweet(apiKey, name, bio, agenda) {
+export async function generatePersonalizedTweet(
+  apiKey: string,
+  name: string,
+  bio: WikipediaData,
+  agenda: string
+): Promise<{ tweet: string; error: string | null }> {
   const prompt = buildPrompt(name, bio.summary, bio.description, agenda);
 
   try {
@@ -45,15 +32,8 @@ export async function generatePersonalizedTweet(apiKey, name, bio, agenda) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        contents: [
-          {
-            parts: [{ text: prompt }],
-          },
-        ],
-        generationConfig: {
-          temperature: 0.9,
-          maxOutputTokens: 150,
-        },
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.9, maxOutputTokens: 150 },
       }),
     });
 
@@ -76,24 +56,16 @@ export async function generatePersonalizedTweet(apiKey, name, bio, agenda) {
       return { tweet: '', error: 'Gemini returned an empty response.' };
     }
 
-    // Clean up the tweet — strip surrounding quotes if present
     const cleaned = text.trim().replace(/^["']|["']$/g, '');
-
-    // Enforce 280 char limit
     const tweet = cleaned.length > 280 ? cleaned.slice(0, 279) + '…' : cleaned;
 
     return { tweet, error: null };
   } catch (err) {
-    return { tweet: '', error: `Network error: ${err.message}` };
+    return { tweet: '', error: `Network error: ${(err as Error).message}` };
   }
 }
 
-/**
- * Quick validation of the API key by making a minimal Gemini request
- * @param {string} apiKey
- * @returns {Promise<{ valid: boolean, message: string }>}
- */
-export async function testApiKey(apiKey) {
+export async function testApiKey(apiKey: string): Promise<ValidationResult> {
   try {
     const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
       method: 'POST',
@@ -112,6 +84,6 @@ export async function testApiKey(apiKey) {
     const errMsg = errBody?.error?.message || `HTTP ${response.status}`;
     return { valid: false, message: `❌ Invalid API key: ${errMsg}` };
   } catch (err) {
-    return { valid: false, message: `❌ Connection error: ${err.message}` };
+    return { valid: false, message: `❌ Connection error: ${(err as Error).message}` };
   }
 }

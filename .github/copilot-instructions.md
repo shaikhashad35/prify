@@ -52,7 +52,7 @@ prify/
 
 ## Key APIs
 - Wikipedia: `GET https://en.wikipedia.org/api/rest_v1/page/summary/{title}`
-- Gemini: `POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={KEY}`
+- Gemini: `POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key={KEY}`
 
 ## Important Notes
 - Process celebrities **sequentially** with delays to avoid rate limiting

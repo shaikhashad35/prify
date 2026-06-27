@@ -1,13 +1,6 @@
-/**
- * validators.js — Input validation functions for PRify
- */
+import type { ValidationResult, HeaderMapping } from '../types';
 
-/**
- * Validate that the API key looks reasonable
- * @param {string} key
- * @returns {{ valid: boolean, message: string }}
- */
-export function validateApiKey(key) {
+export function validateApiKey(key: string): ValidationResult {
   if (!key || key.trim().length === 0) {
     return { valid: false, message: 'API key cannot be empty.' };
   }
@@ -17,12 +10,7 @@ export function validateApiKey(key) {
   return { valid: true, message: 'API key saved.' };
 }
 
-/**
- * Validate the uploaded file is an Excel file
- * @param {File} file
- * @returns {{ valid: boolean, message: string }}
- */
-export function validateFile(file) {
+export function validateFile(file: File): ValidationResult {
   if (!file) {
     return { valid: false, message: 'No file selected.' };
   }
@@ -32,31 +20,22 @@ export function validateFile(file) {
   if (!hasValidExt) {
     return { valid: false, message: 'Only .xlsx or .xls files are supported.' };
   }
-  const maxSizeMB = 10;
-  if (file.size > maxSizeMB * 1024 * 1024) {
-    return { valid: false, message: `File size exceeds ${maxSizeMB}MB limit.` };
+  if (file.size > 10 * 1024 * 1024) {
+    return { valid: false, message: 'File size exceeds 10MB limit.' };
   }
   return { valid: true, message: `File "${file.name}" is valid.` };
 }
 
-/**
- * Known header variations mapped to canonical column names
- */
-const HEADER_ALIASES = {
+const HEADER_ALIASES: Record<string, string[]> = {
   name: ['name', 'celebrity name', 'celebname', 'celeb name', 'celebrity'],
   contact: ['contact', 'email', 'phone', 'contact info', 'contactinfo', 'email address'],
   wikipediaLink: ['wikipedia link', 'wikipedialink', 'wikipedia', 'wiki', 'wikipedia url', 'wiki link', 'wiki url'],
 };
 
-/**
- * Map raw headers from the Excel file to canonical column names
- * @param {string[]} headers - Raw header strings from the first row
- * @returns {{ mapping: Record<string, string>|null, missing: string[] }}
- */
-export function mapHeaders(headers) {
+export function mapHeaders(headers: string[]): HeaderMapping {
   const normalized = headers.map(h => h.toString().trim().toLowerCase());
-  const mapping = {};
-  const missing = [];
+  const mapping: Record<string, string> = {};
+  const missing: string[] = [];
 
   for (const [canonical, aliases] of Object.entries(HEADER_ALIASES)) {
     const index = normalized.findIndex(h => aliases.includes(h));
@@ -73,12 +52,7 @@ export function mapHeaders(headers) {
   return { mapping, missing: [] };
 }
 
-/**
- * Validate the PR agenda text
- * @param {string} agenda
- * @returns {{ valid: boolean, message: string }}
- */
-export function validateAgenda(agenda) {
+export function validateAgenda(agenda: string): ValidationResult {
   if (!agenda || agenda.trim().length === 0) {
     return { valid: false, message: 'PR agenda cannot be empty.' };
   }
@@ -88,12 +62,7 @@ export function validateAgenda(agenda) {
   return { valid: true, message: '' };
 }
 
-/**
- * Validate a Wikipedia URL
- * @param {string} url
- * @returns {boolean}
- */
-export function isValidWikipediaUrl(url) {
+export function isValidWikipediaUrl(url: string): boolean {
   if (!url || typeof url !== 'string') return false;
   try {
     const parsed = new URL(url.trim());
